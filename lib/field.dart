@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class kButton extends StatelessWidget {
-  kButton({super.key, required this.text});
+class Field extends StatelessWidget {
+  Field({super.key, required this.text});
 
   String text;
 
@@ -11,7 +11,7 @@ class kButton extends StatelessWidget {
       onPressed: () {},
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 25,
         ),
       ),

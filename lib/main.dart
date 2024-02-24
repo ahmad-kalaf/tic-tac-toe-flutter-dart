@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tic_tac_toe_game/customRow.dart';
+import 'package:tic_tac_toe_game/fields_row.dart';
 
 void main() {
   runApp(const TicTacToeGame());
@@ -11,7 +11,7 @@ class TicTacToeGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MainScreen(),
     );
@@ -38,39 +38,23 @@ class _MainScreenState extends State<MainScreen> {
           currentPlayer,
           style: GoogleFonts.getFont(
             "Bebas Neue",
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 30,
             ),
           ),
         ),
         centerTitle: true,
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                ),
-                shrinkWrap: true,
-                children: [
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                  kButton(text: "X"),
-                ],
-              ),
-            ),
-          ],
-        ),
+      body: const Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // info-text to show whos turn it is
+          Text("X / O ist dran"),
+          // 9 game fileds
+          FieldsRow(),
+          FieldsRow(),
+          FieldsRow(),
+        ],
       ),
     );
   }
