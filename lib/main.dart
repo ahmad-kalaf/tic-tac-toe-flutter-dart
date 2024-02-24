@@ -32,8 +32,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return const Scaffold(
+      /*appBar: AppBar(
         title: Text(
           currentPlayer,
           style: GoogleFonts.getFont(
@@ -44,8 +44,8 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         centerTitle: true,
-      ),
-      body: const Column(
+      ),*/
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           // info-text to show whos turn it is

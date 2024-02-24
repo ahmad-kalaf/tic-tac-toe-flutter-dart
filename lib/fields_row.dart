@@ -9,9 +9,9 @@ class FieldsRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Field(text: "X"),
-        Field(text: "O"),
-        Field(text: "X"),
+        Field(),
+        Field(),
+        Field(),
       ],
     );
   }
