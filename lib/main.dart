@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe_game/game_logic/GameLogic.dart';
 
 void main() {
   runApp(const TicTacToeGame());
@@ -36,6 +37,8 @@ class _GameScreenState extends State<GameScreen> {
         overlayColor: MaterialStatePropertyAll(Colors.red),
       );
 
+  GameLogic logic = GameLogic();
+
   void switchPlayer(int num) {
     setState(() {
       player[num] = currPlayer % 2 == 0 ? 'O' : 'X';
@@ -52,6 +55,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         backgroundColor: Colors.greenAccent,
         title: Text("Tic Tac Toe"),
