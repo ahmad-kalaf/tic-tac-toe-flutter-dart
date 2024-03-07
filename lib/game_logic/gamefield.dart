@@ -1,4 +1,4 @@
-import 'GamefieldRow.dart';
+import 'gamefield_row.dart';
 
 class Gamefield {
   late List<GamefieldRow> _zeilen;

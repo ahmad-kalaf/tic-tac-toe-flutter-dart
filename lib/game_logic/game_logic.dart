@@ -1,5 +1,5 @@
 import 'dart:core';
-import 'Gamefield.dart';
+import 'gamefield.dart';
 
 class GameLogic {
 
@@ -9,7 +9,7 @@ class GameLogic {
 
     GameLogic()
     {
-        _spielfeld = new Gamefield();
+        _spielfeld = Gamefield();
         _aktuellerSpieler = 1;
         _gewinner = -1;
     }
