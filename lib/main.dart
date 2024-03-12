@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe_game/game_logic/game_logic.dart';
 import 'constants.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+
 
 void main() {
   runApp(const TicTacToeGame());
+  // set the size for windows
+  doWhenWindowReady(() {
+    const initialSize = Size(300, 480);
+    appWindow.minSize = initialSize;
+    appWindow.size = initialSize;
+    appWindow.maxSize = initialSize;
+    appWindow.alignment = Alignment.center;
+    appWindow.title = "Tic Tac Toe";
+    appWindow.show();
+  });
 }
 
 class TicTacToeGame extends StatelessWidget {
@@ -27,6 +39,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  int row = 0;
+  int col = 0;
   int currPlayer = 1;
   List<String> player = List.generate(9, (index) => ' ');
   var keys = <int>[0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -37,10 +51,12 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       player[num] = currPlayer % 2 == 0 ? 'O' : 'X';
       currPlayer++;
+      row = currPlayer ~/ 3;
+      col = currPlayer % 3;
     });
+    logic.besetzePosition(row, col);
+    logic.wechsleSpieler();
   }
-
-  var index = 0;
 
   bool disableButton(int buttonKey) {
     return (player[buttonKey] == 'O' || player[buttonKey] == 'X')
@@ -97,7 +113,6 @@ class _GameScreenState extends State<GameScreen> {
                     currPlayer = 1;
                     player = List.generate(9, (index) => ' ');
                     keys = <int>[0, 1, 2, 3, 4, 5, 6, 7, 8];
-                    index = 0;
                   });
                 },
                 style: kButtonStyle,
