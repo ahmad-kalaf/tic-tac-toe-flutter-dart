@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe_game/game_logic/game_logic.dart';
 import 'constants.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-
 
 void main() {
   runApp(const TicTacToeGame());
@@ -39,27 +37,98 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  int row = 0;
-  int col = 0;
-  int currPlayer = 1;
+  bool currPlayerIsX = false;
+  bool allButtonsDisabled = false;
   List<String> player = List.generate(9, (index) => ' ');
-  var keys = <int>[0, 1, 2, 3, 4, 5, 6, 7, 8];
-
-  GameLogic logic = GameLogic();
 
   void switchPlayer(int num) {
     setState(() {
-      player[num] = currPlayer % 2 == 0 ? 'O' : 'X';
-      currPlayer++;
-      row = currPlayer ~/ 3;
-      col = currPlayer % 3;
+      player[num] = currPlayerIsX ? 'O' : 'X';
+      currPlayerIsX = !currPlayerIsX;
     });
-    logic.besetzePosition(row, col);
-    logic.wechsleSpieler();
+    getWinner();
+  }
+
+  void getWinner() {
+    // first row
+    if (player[0] != ' ' && player[0] == player[1] && player[0] == player[2]) {
+      showWinner();
+    }
+
+    // second row
+    if (player[3] != ' ' && player[3] == player[4] && player[3] == player[5]) {
+      showWinner();
+    }
+
+    // third row
+    if (player[6] != ' ' && player[6] == player[7] && player[6] == player[8]) {
+      showWinner();
+    }
+
+    // diagonal left-top to right-bottom
+    if (player[0] != ' ' && player[0] == player[4] && player[0] == player[8]) {
+      showWinner();
+    }
+
+    // diagonal left-bottom to right-top
+    if (player[6] != ' ' && player[6] == player[4] && player[6] == player[2]) {
+      showWinner();
+    }
+
+    // first column
+    if (player[0] != ' ' && player[0] == player[3] && player[0] == player[6]) {
+      showWinner();
+    }
+
+    // second column
+    if (player[1] != ' ' && player[1] == player[4] && player[1] == player[7]) {
+      showWinner();
+    }
+
+    // third column
+    if (player[2] != ' ' && player[2] == player[5] && player[2] == player[8]) {
+      showWinner();
+    }
+  }
+
+  void showWinner() {
+    String winner = currPlayerIsX ? 'X' : 'O';
+    setState(() {
+      allButtonsDisabled = true;
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text("$winner wins! restart?"),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  currPlayerIsX = false;
+                  player = List.generate(9, (index) => ' ');
+                  allButtonsDisabled = false;
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "YES",
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "NO",
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   bool disableButton(int buttonKey) {
-    return (player[buttonKey] == 'O' || player[buttonKey] == 'X')
+    return (allButtonsDisabled || player[buttonKey] == 'O' || player[buttonKey] == 'X')
         ? true
         : false;
   }
@@ -70,62 +139,66 @@ class _GameScreenState extends State<GameScreen> {
       appBar: AppBar(
         backgroundColor: Colors.greenAccent,
         title: Text(
-          currPlayer % 2 == 0 ? 'O ist dran' : 'X ist dran',
+          currPlayerIsX ? 'O ist dran' : 'X ist dran',
           style: const TextStyle(
             fontSize: 40,
           ),
         ),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+      body: GestureDetector(
+        onTap: (){
+          allButtonsDisabled ? showWinner() : null;
+        },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                  ),
+                  itemCount: 9,
+                  itemBuilder: (context, index) => ElevatedButton(
+                    onPressed: disableButton(index)
+                        ? null
+                        : () {
+                            switchPlayer(index);
+                          },
+                    style: kButtonStyle,
+                    child: Text(
+                      player[index],
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
                 ),
-                itemCount: 9,
-                itemBuilder: (context, index) => ElevatedButton(
-                  onPressed: disableButton(index)
-                      ? null
-                      : () {
-                          switchPlayer(index);
-                        },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      currPlayerIsX = false;
+                      player = List.generate(9, (index) => ' ');
+                    });
+                  },
                   style: kButtonStyle,
-                  child: Text(
-                    player[keys[index]],
-                    style: Theme.of(context).textTheme.headlineMedium,
+                  child: const Text(
+                    'Neustarten',
+                    style: TextStyle(
+                      fontSize: 40,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    currPlayer = 1;
-                    player = List.generate(9, (index) => ' ');
-                    keys = <int>[0, 1, 2, 3, 4, 5, 6, 7, 8];
-                  });
-                },
-                style: kButtonStyle,
-                child: const Text(
-                  'Neustarten',
-                  style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
