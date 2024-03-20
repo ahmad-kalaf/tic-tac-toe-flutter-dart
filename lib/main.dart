@@ -9,7 +9,7 @@ void main() {
     const initialSize = Size(300, 480);
     appWindow.minSize = initialSize;
     appWindow.size = initialSize;
-    appWindow.maxSize = initialSize;
+    // appWindow.maxSize = initialSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = "Tic Tac Toe";
     appWindow.show();
@@ -128,7 +128,9 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   bool disableButton(int buttonKey) {
-    return (allButtonsDisabled || player[buttonKey] == 'O' || player[buttonKey] == 'X')
+    return (allButtonsDisabled ||
+            player[buttonKey] == 'O' ||
+            player[buttonKey] == 'X')
         ? true
         : false;
   }
@@ -147,57 +149,99 @@ class _GameScreenState extends State<GameScreen> {
         centerTitle: true,
       ),
       body: GestureDetector(
-        onTap: (){
+        onTap: () {
           allButtonsDisabled ? showWinner() : null;
         },
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
+          child: SizedBox(
+            height: MediaQuery.sizeOf(context).height,
+            width: MediaQuery.sizeOf(context).width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                // const SizedBox(
+                //   height: 20,
+                // ),
+                // Expanded(
+                //   child: GridView.builder(
+                //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                //       crossAxisCount: 3,
+                //     ),
+                //     itemCount: 9,
+                //     itemBuilder: (context, index) => ElevatedButton(
+                //       onPressed: disableButton(index)
+                //           ? null
+                //           : () {
+                //               switchPlayer(index);
+                //             },
+                //       style: kButtonStyle,
+                //       child: Text(
+                //         player[index],
+                //         style: Theme.of(context).textTheme.headlineMedium,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                    3,
+                    (rowIndex) => Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        3,
+                        (columnIndex) {
+                          int index = rowIndex * 3 + columnIndex;
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: MediaQuery.sizeOf(context).width * 0.25,
+                              height: MediaQuery.sizeOf(context).height * 0.15,
+                              child: ElevatedButton(
+                                onPressed: disableButton(index)
+                                    ? null
+                                    : () {
+                                        switchPlayer(index);
+                                      },
+                                style: kButtonStyle,
+                                child: Text(
+                                  player[index],
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                  itemCount: 9,
-                  itemBuilder: (context, index) => ElevatedButton(
-                    onPressed: disableButton(index)
-                        ? null
-                        : () {
-                            switchPlayer(index);
-                          },
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        allButtonsDisabled = false;
+                        currPlayerIsX = false;
+                        player = List.generate(9, (index) => ' ');
+                      });
+                    },
                     style: kButtonStyle,
-                    child: Text(
-                      player[index],
-                      style: Theme.of(context).textTheme.headlineMedium,
+                    child: const Text(
+                      'Neustarten',
+                      style: TextStyle(
+                        fontSize: 40,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      currPlayerIsX = false;
-                      player = List.generate(9, (index) => ' ');
-                    });
-                  },
-                  style: kButtonStyle,
-                  child: const Text(
-                    'Neustarten',
-                    style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
