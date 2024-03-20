@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'constants.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 void main() {
@@ -40,6 +39,7 @@ class _GameScreenState extends State<GameScreen> {
   bool currPlayerIsX = false;
   bool allButtonsDisabled = false;
   List<String> player = List.generate(9, (index) => ' ');
+  List<int> winFields = [0, 0, 0];
 
   void switchPlayer(int num) {
     setState(() {
@@ -53,52 +53,76 @@ class _GameScreenState extends State<GameScreen> {
     // first row
     if (player[0] != ' ' && player[0] == player[1] && player[0] == player[2]) {
       showWinner();
+      setState(() {
+        winFields = [0, 1, 2];
+      });
     }
 
     // second row
     if (player[3] != ' ' && player[3] == player[4] && player[3] == player[5]) {
       showWinner();
+      setState(() {
+        winFields = [3, 4, 5];
+      });
     }
 
     // third row
     if (player[6] != ' ' && player[6] == player[7] && player[6] == player[8]) {
       showWinner();
+      setState(() {
+        winFields = [6, 7, 8];
+      });
     }
 
     // diagonal left-top to right-bottom
     if (player[0] != ' ' && player[0] == player[4] && player[0] == player[8]) {
       showWinner();
+      setState(() {
+        winFields = [0, 4, 8];
+      });
     }
 
     // diagonal left-bottom to right-top
     if (player[6] != ' ' && player[6] == player[4] && player[6] == player[2]) {
       showWinner();
+      setState(() {
+        winFields = [6, 4, 2];
+      });
     }
 
     // first column
     if (player[0] != ' ' && player[0] == player[3] && player[0] == player[6]) {
       showWinner();
+      setState(() {
+        winFields = [0, 3, 6];
+      });
     }
 
     // second column
     if (player[1] != ' ' && player[1] == player[4] && player[1] == player[7]) {
       showWinner();
+      setState(() {
+        winFields = [1, 4, 7];
+      });
     }
 
     // third column
     if (player[2] != ' ' && player[2] == player[5] && player[2] == player[8]) {
       showWinner();
+      setState(() {
+        winFields = [2, 5, 8];
+      });
     }
   }
 
   void showWinner() {
-    String winner = currPlayerIsX ? 'X' : 'O';
+    String winner = currPlayerIsX ? "X gewinnt!" : "O gewinnt!";
     setState(() {
       allButtonsDisabled = true;
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          content: Text("$winner wins! restart?"),
+          content: Text("$winner Neustart?"),
           actions: [
             ElevatedButton(
               onPressed: () {
@@ -106,6 +130,7 @@ class _GameScreenState extends State<GameScreen> {
                   currPlayerIsX = false;
                   player = List.generate(9, (index) => ' ');
                   allButtonsDisabled = false;
+                  winFields = [0, 0, 0];
                 });
                 Navigator.of(context).pop();
               },
@@ -206,7 +231,18 @@ class _GameScreenState extends State<GameScreen> {
                                     : () {
                                         switchPlayer(index);
                                       },
-                                style: kButtonStyle,
+                                style: ButtonStyle(
+                                  backgroundColor: (!winFields.every(
+                                              (element) => element == 0) &&
+                                          winFields.contains(index))
+                                      ? const MaterialStatePropertyAll(
+                                          Colors.red)
+                                      : const MaterialStatePropertyAll(
+                                          Colors.greenAccent),
+                                  enableFeedback: false,
+                                  overlayColor: const MaterialStatePropertyAll(
+                                      Colors.red),
+                                ),
                                 child: Text(
                                   player[index],
                                   style: Theme.of(context).textTheme.titleLarge,
@@ -228,9 +264,15 @@ class _GameScreenState extends State<GameScreen> {
                         allButtonsDisabled = false;
                         currPlayerIsX = false;
                         player = List.generate(9, (index) => ' ');
+                        winFields = [0, 0, 0];
                       });
                     },
-                    style: kButtonStyle,
+                    style: const ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.greenAccent),
+                      enableFeedback: false,
+                      overlayColor: MaterialStatePropertyAll(Colors.red),
+                    ),
                     child: const Text(
                       'Neustarten',
                       style: TextStyle(
